@@ -5,32 +5,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build Commands
 
 ```bash
-pio run                      # Build
-pio run --target upload      # Build and flash
-pio run --target clean       # Clean
-pio device monitor           # Serial monitor (115200 baud)
+pio run                              # Build
+pio run --target upload              # Build and flash
+pio run --target upload && pio device monitor  # Flash and monitor
+pio device monitor                   # Serial monitor (115200 baud)
 ```
 
 ## Code Quality
 
 ```bash
-./tools/format.sh            # Format (clang-format)
-./tools/lint.sh              # Static analysis (clangtidy)
+./tools/format.sh                    # Format all (clang-format)
+./tools/lint.sh                      # Lint all (clangtidy)
+pio check --src-filters="+<src/app/app.cpp>"   # Lint single file
 ```
 
-**Wichtig:** Immer `format.sh` vor `lint.sh` ausfuehren - Format und Lint arbeiten zusammen.
+**Wichtig:** Immer `format.sh` vor `lint.sh` ausfuehren.
 
 ## Architecture
 
 **Target**: ESP32-S3 (Seeed XIAO ESP32S3) mit Arduino-Framework
 
-**Sprachsplit**: C fuer Treiber/HAL, C++ fuer Applikation (Ausnahme: `serial_hal.cpp` ist C++ wegen Arduino Serial, aber mit `extern "C"` Linkage)
+```
+src/app/        → Applikationslogik (C++, keine direkten HW-Aufrufe)
+src/hw/         → HAL-Implementierungen (C/C++)
+include/hw/     → HAL-Schnittstellen (C mit extern "C")
+include/common/ → Typen, Konfiguration (error_codes.h, app_config.h)
+```
 
-**Layer-Trennung**: Applikationscode (`src/app/`) greift nie direkt auf ESP-IDF/Arduino-Treiber zu. Hardware-Zugriff nur ueber HAL (`src/hw/`, `include/hw/`).
+**Sprachsplit**: C fuer Treiber/HAL, C++ fuer Applikation. `serial_hal.cpp` ist C++ wegen Arduino Serial, aber mit `extern "C"` Linkage.
 
 **Entry Point**: `src/main.cpp` mit Arduino `setup()`/`loop()` - `run_forever()` blockiert in `setup()`
 
-**Serial/Logging**: `serial_hal` mit Startup-Delay (`APP_SERIAL_STARTUP_MS`) damit fruehe Ausgaben nach Reset nicht verloren gehen. Logging mit Level und Modul-Tag: `serial_hal_log(LOG_LEVEL_INFO, "Tag", "msg")`
+**Serial/Logging**: `serial_hal` mit Startup-Delay (`APP_SERIAL_STARTUP_MS`) damit fruehe Ausgaben nach Reset nicht verloren gehen. Logging: `serial_hal_log(LOG_LEVEL_INFO, "Tag", "msg")`
 
 ## Coding Rules (BARR-C + MISRA-orientiert)
 

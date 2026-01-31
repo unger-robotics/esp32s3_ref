@@ -403,9 +403,109 @@ Bei Aenderungen:
 
 ---
 
-## 9. Referenz
+## 9. Git-Workflow
 
-### 9.1 Projektdateien
+### 9.1 Repository-URL
+
+```
+https://github.com/unger-robotics/esp32s3_ref
+SSH: git@github.com:unger-robotics/esp32s3_ref.git
+```
+
+### 9.2 Ersteinrichtung (neues Projekt)
+
+```bash
+# 1. Git initialisieren
+git init
+
+# 2. Alle Dateien stagen
+git add .
+
+# 3. Initialer Commit
+git commit -m "Initial commit: ESP32-S3 Referenzprojekt v1.0.0"
+
+# 4. Remote hinzufuegen (SSH)
+git remote add origin git@github.com:unger-robotics/esp32s3_ref.git
+
+# 5. Branch umbenennen zu main
+git branch -M main
+
+# 6. Push mit Upstream-Tracking
+git push -u origin main
+```
+
+### 9.3 Taeglicher Workflow
+
+```bash
+# Aenderungen anzeigen
+git status
+git diff
+
+# Dateien stagen
+git add <dateien>           # Einzelne Dateien
+git add .                   # Alle Aenderungen
+
+# Commit erstellen
+git commit -m "Kurze Beschreibung"
+
+# Push zu GitHub
+git push
+
+# Aenderungen von GitHub holen
+git pull
+```
+
+### 9.4 Feature-Branch Workflow
+
+```bash
+# Neuen Branch erstellen und wechseln
+git checkout -b feature/button-hal
+
+# Arbeiten, committen...
+git add .
+git commit -m "Add button HAL module"
+
+# Zurueck zu main und mergen
+git checkout main
+git pull
+git merge feature/button-hal
+
+# Push und Branch loeschen
+git push
+git branch -d feature/button-hal
+```
+
+### 9.5 Release erstellen
+
+```bash
+# Version in app_config.h erhoehen
+# CHANGELOG.md aktualisieren
+
+git add .
+git commit -m "Release v1.1.0"
+git tag -a v1.1.0 -m "Version 1.1.0: Button-HAL hinzugefuegt"
+git push
+git push --tags
+```
+
+### 9.6 Nuetzliche Befehle
+
+| Befehl | Beschreibung |
+|--------|--------------|
+| `git status` | Aktueller Status |
+| `git log --oneline -10` | Letzte 10 Commits |
+| `git diff` | Unstaged Aenderungen |
+| `git diff --staged` | Staged Aenderungen |
+| `git stash` | Aenderungen zwischenspeichern |
+| `git stash pop` | Zwischengespeichertes zurueckholen |
+| `git reset HEAD <datei>` | Datei unstagen |
+| `git checkout -- <datei>` | Aenderungen verwerfen |
+
+---
+
+## 10. Referenz
+
+### 10.1 Projektdateien
 
 | Datei | Beschreibung |
 |-------|--------------|
@@ -414,7 +514,7 @@ Bei Aenderungen:
 | `.gitignore` | Git-Ausschluesse |
 | `CLAUDE.md` | AI-Assistenten-Anleitung |
 
-### 9.2 Dokumentation
+### 10.2 Dokumentation
 
 | Datei | Inhalt |
 |-------|--------|
@@ -424,7 +524,7 @@ Bei Aenderungen:
 | `docs/ALGORITHM.md` | Algorithmus-Spezifikationen |
 | `docs/ENTWICKLERDOKU.md` | Diese Datei |
 
-### 9.3 Externe Ressourcen
+### 10.3 Externe Ressourcen
 
 - [PlatformIO Docs](https://docs.platformio.org/)
 - [ESP-IDF GPIO API](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/api-reference/peripherals/gpio.html)
