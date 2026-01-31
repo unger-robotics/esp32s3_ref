@@ -38,6 +38,16 @@ include/common/ → Typen, Konfiguration (error_codes.h, app_config.h)
 
 **Serial/Logging**: `serial_hal` mit Startup-Delay (`APP_SERIAL_STARTUP_MS`) damit fruehe Ausgaben nach Reset nicht verloren gehen. Logging: `serial_hal_log(LOG_LEVEL_INFO, "Tag", "msg")`
 
+**Wichtigste Regel**: Applikation (`src/app/`) greift **nie direkt** auf Arduino/ESP-IDF zu - nur ueber HAL (`src/hw/`, `include/hw/`). Framework-Aufrufe gehoeren ausschliesslich in die HAL-Schicht.
+
+## Neues HAL-Modul
+
+Siehe `docs/ENTWICKLERDOKU.md` Kapitel 3 fuer vollstaendige Anleitung. Kurzfassung:
+1. Header in `include/hw/` mit `extern "C"` Guards
+2. Implementierung in `src/hw/` (C fuer reine GPIO, C++ wenn Arduino-Objekte noetig)
+3. Konfiguration in `include/common/app_config.h`
+4. Integration in `src/app/app.cpp`
+
 ## Coding Rules (BARR-C + MISRA-orientiert)
 
 - **Fehlerbehandlung**: `error_code_e` zurueckgeben, `APP_ERR_SUCCESS` (0) bei Erfolg, negative Werte bei Fehler (APP_ERR_ Prefix wegen lwIP-Kollision)
