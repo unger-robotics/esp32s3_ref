@@ -1,0 +1,13 @@
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++17
+IndentWidth: 4
+UseTab: Never
+ColumnLimit: 100
+BreakBeforeBraces: Linux
+AllowShortFunctionsOnASingleLine: None
+SortIncludes: true
+SortUsingDeclarations: true
+NamespaceIndentation: All
+PointerAlignment: Right
+SpaceAfterCStyleCast: false
